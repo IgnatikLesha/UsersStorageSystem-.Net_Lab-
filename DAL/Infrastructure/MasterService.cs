@@ -24,6 +24,7 @@
 
         private ReaderWriterLockSlim rwl = new ReaderWriterLockSlim();
 
+        private List<User> newUsers = new List<User> { };
 
         public MasterService()
         {
@@ -42,6 +43,7 @@
             try
             {
                 OnMessage(new ActionEventArgs(){Message = "User added/created"});
+                newUsers.Add(user);
                 return UserRepository.Create(user);
             }
             finally
@@ -69,6 +71,10 @@
             try
             {
                 OnMessage(new ActionEventArgs{Message = "User deleted"});
+                if (newUsers.Contains(user))
+                {
+                    newUsers.Remove(user);
+                }
                 return UserRepository.Delete(user);
             }
             finally
@@ -124,7 +130,7 @@
 
                 using (var fileStr = new FileStream(file, FileMode.OpenOrCreate))
                 {
-                    saver.Serialize(fileStr, UserRepository.Users);
+                    saver.Serialize(fileStr, newUsers);
                 }
             }
             finally
