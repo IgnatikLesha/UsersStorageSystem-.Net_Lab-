@@ -10,7 +10,7 @@
 
 
     [Serializable]
-    public class UserRepository:IRepository<User>
+    public class UserRepository:IRepository<User> 
     {
         public int LastId { get; set; }
         public List<User> Users { get; set; }
